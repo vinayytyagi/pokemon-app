@@ -1,19 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import './App.css';
 
-function App() {
+const PokemonList = () => {
   const [pokemonData, setPokemonData] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    axios.get('https://pokeapi.co/api/v2/pokemon')
-      .then((response) => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('https://pokeapi.co/api/v2/pokemon');
         setPokemonData(response.data.results);
-      })
-      .catch((error) => {
+      } catch (error) {
         console.error('Error fetching data:', error);
-      });
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleSearch = (event) => {
@@ -25,17 +27,16 @@ function App() {
   );
 
   return (
-    <div className="App">
-      <h1>Pokemon Search</h1>
+    <div>
       <input
         type="text"
-        placeholder="Search Pokemon"
+        placeholder="Search Pokemon..."
         value={searchTerm}
         onChange={handleSearch}
       />
-      <div className="pokemon-container">
+      <div className="pokemon-list">
         {filteredPokemon.map((pokemon, index) => (
-          <div className="pokemon-card" key={index}>
+          <div key={index} className="pokemon-card">
             <img
               src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${index + 1}.png`}
               alt={pokemon.name}
@@ -46,6 +47,6 @@ function App() {
       </div>
     </div>
   );
-}
+};
 
-export default App;
+export default PokemonList;
